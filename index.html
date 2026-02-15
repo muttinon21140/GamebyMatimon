@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Glitch Market</title>
+    <style>
+        body { background: #0f0f1f; color: #00ffcc; font-family: 'Courier New', monospace; text-align: center; }
+        .game-container { border: 2px solid #00ffcc; margin: 20px auto; padding: 20px; width: 80%; box-shadow: 0 0 15px #00ffcc; }
+        .player-box { display: inline-block; border: 1px solid #ff00ff; padding: 10px; margin: 10px; min-width: 150px; }
+        button { background: #ff00ff; border: none; color: white; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #00ffcc; color: #000; }
+        .market-price { font-size: 2em; color: #ffff00; text-shadow: 0 0 10px #ffff00; }
+    </style>
+</head>
+<body>
+    <h1>[ THE GLITCH MARKET ]</h1>
+    <div class="game-container">
+        <div class="market-price">ราคา Data Cube: <span id="cube-price">50</span> Cr.</div>
+        <p id="game-log">ยินดีต้อนรับสู่ตลาดมืด... เริ่มเกมได้!</p>
+        <hr>
+        <div id="players-ui"></div>
+    </div>
+
+    <script>
+        let price = 50;
+        let players = [
+            { id: 1, money: 100, cubes: 0 },
+            { id: 2, money: 100, cubes: 0 }
+        ];
+
+        function updateUI() {
+            document.getElementById('cube-price').innerText = price;
+            const ui = document.getElementById('players-ui');
+            ui.innerHTML = '';
+            players.forEach(p => {
+                ui.innerHTML += `
+                    <div class="player-box">
+                        <h3>Player ${p.id}</h3>
+                        <p>Money: ${p.money}</p>
+                        <p>Cubes: ${p.cubes}</p>
+                        <button onclick="buyCube(${p.id})">BUY</button>
+                        <button onclick="hackPlayer(${p.id})">HACK</button>
+                    </div>
+                `;
+            });
+        }
+
+        function buyCube(id) {
+            let p = players.find(x => x.id === id);
+            if (p.money >= price) {
+                p.money -= price;
+                p.cubes++;
+                price += 10; // ยิ่งซื้อเยอะ ราคายิ่งขึ้น
+                checkWin(p);
+            } else {
+                alert("เงินไม่พอไอ้หนู!");
+            }
+            randomMarket();
+            updateUI();
+        }
+
+        function randomMarket() {
+            price = Math.max(10, price + Math.floor(Math.random() * 41) - 20);
+        }
+
+        function checkWin(p) {
+            if (p.cubes >= 5) alert(`Player ${p.id} ชนะแล้ว! มหาเศรษฐีตัวจริง!`);
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
