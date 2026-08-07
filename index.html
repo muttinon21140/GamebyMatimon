@@ -1,160 +1,511 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siam Prime Minister: 77 Provinces</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hearts of Siam</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <!-- ============ START SCREEN ============ -->
     <div id="start-screen">
-        <div class="start-bg-effect"></div>
-        <div class="start-content">
-            <div class="start-logo">
-                <div style="font-size:64px;">🏛️</div>
-                <h1 class="start-title">SIAM PRIME MINISTER</h1>
-                <h2 class="start-subtitle">77 จังหวัด · บริหารประเทศไทย</h2>
-            </div>
-
-            <!-- เมนูหลัก -->
-            <div id="start-menu" class="start-menu">
-                <button class="start-btn primary" onclick="newGame()">🎮 เริ่มเกมใหม่</button>
-                <button class="start-btn" onclick="openLoadMenu()">📂 โหลดเกม</button>
-                <button class="start-btn" onclick="startTutorial()">📖 วิธีเล่น</button>
-                <button class="start-btn" onclick="openSettings()">⚙️ ตั้งค่า</button>
-            </div>
-
-            <!-- เมนูเลือกระดับความยาก -->
-            <div id="difficulty-menu" class="start-menu" style="display:none;">
-                <h3 style="margin-bottom:15px; color:#e6edf3;">เลือกระดับความยาก</h3>
-                <div id="difficulty-options"></div>
-                <button class="start-btn" style="margin-top:15px;" onclick="backToStartMenu()">← ย้อนกลับ</button>
-            </div>
-
-            <!-- เมนูโหลดเกม -->
-            <div id="load-menu" class="start-menu" style="display:none;">
-                <h3 style="margin-bottom:15px; color:#e6edf3;">เลือกสล็อดบันทึก</h3>
-                <div id="load-slots"></div>
-                <button class="start-btn" style="margin-top:15px;" onclick="backToStartMenu()">← ย้อนกลับ</button>
-            </div>
+      <div class="start-bg-effect"></div>
+      <div class="start-content">
+        <div class="start-logo">
+          <div style="font-size: 64px">🏛️</div>
+          <h1 class="start-title">HEARTS OF SIAM</h1>
+          <h2 class="start-subtitle">77 จังหวัด · บริหารประเทศไทย</h2>
         </div>
+
+        <!-- เมนูหลัก -->
+        <div id="start-menu" class="start-menu">
+          <button class="start-btn primary" onclick="newGame()">
+            🎮 เริ่มเกมใหม่
+          </button>
+          <button class="start-btn" onclick="openLoadMenu()">📂 โหลดเกม</button>
+          <button class="start-btn" onclick="startTutorial()">
+            📖 วิธีเล่น
+          </button>
+          <button class="start-btn" onclick="openSettings()">⚙️ ตั้งค่า</button>
+        </div>
+
+        <!-- เมนูเลือกระดับความยาก -->
+        <div id="difficulty-menu" class="start-menu" style="display: none">
+          <h3 style="margin-bottom: 15px; color: #e6edf3">เลือกระดับความยาก</h3>
+          <div id="difficulty-options"></div>
+          <button
+            class="start-btn"
+            style="margin-top: 15px"
+            onclick="backToStartMenu()"
+          >
+            ← ย้อนกลับ
+          </button>
+        </div>
+
+        <!-- เมนูโหลดเกม -->
+        <div id="load-menu" class="start-menu" style="display: none">
+          <h3 style="margin-bottom: 15px; color: #e6edf3">เลือกสล็อดบันทึก</h3>
+          <div id="load-slots"></div>
+          <button
+            class="start-btn"
+            style="margin-top: 15px"
+            onclick="backToStartMenu()"
+          >
+            ← ย้อนกลับ
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ============ TUTORIAL OVERLAY ============ -->
-    <div id="tutorial-overlay" style="display:none;">
-        <div class="tutorial-card">
-            <h2 id="tutorial-title"></h2>
-            <p id="tutorial-text"></p>
-            <div class="tutorial-controls">
-                <span id="tutorial-progress" style="color:#8b949e;"></span>
-                <div>
-                    <button class="tutorial-btn skip" onclick="skipTutorial()">ข้าม</button>
-                    <button class="tutorial-btn next" id="tutorial-next" onclick="nextTutorialStep()">ถัดไป →</button>
-                </div>
-            </div>
+    <div id="tutorial-overlay" style="display: none">
+      <div class="tutorial-card">
+        <h2 id="tutorial-title"></h2>
+        <p id="tutorial-text"></p>
+        <div class="tutorial-controls">
+          <span id="tutorial-progress" style="color: #8b949e"></span>
+          <div>
+            <button class="tutorial-btn skip" onclick="skipTutorial()">
+              ข้าม
+            </button>
+            <button
+              class="tutorial-btn next"
+              id="tutorial-next"
+              onclick="nextTutorialStep()"
+            >
+              ถัดไป →
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- ============ EVENT MODAL ============ -->
-    <div id="event-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="glass-panel" style="border-radius:12px; padding:30px; width:450px; text-align:center;">
-            <h2 id="event-title" style="color:var(--primary); margin-bottom:10px; font-size:24px;">ชื่อนโยบาย</h2>
-            <h4 style="color:#e6edf3; margin-bottom:15px;">เป้าหมาย: <span id="event-prov" style="color:var(--warning);"></span></h4>
+    <div
+      id="event-modal-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      "
+    >
+      <div
+        class="glass-panel"
+        style="
+          border-radius: 12px;
+          padding: 30px;
+          width: 450px;
+          text-align: center;
+        "
+      >
+        <h2
+          id="event-title"
+          style="color: var(--primary); margin-bottom: 10px; font-size: 24px"
+        >
+          ชื่อนโยบาย
+        </h2>
+        <h4 style="color: #e6edf3; margin-bottom: 15px">
+          เป้าหมาย: <span id="event-prov" style="color: var(--warning)"></span>
+        </h4>
 
-            <p id="event-desc" style="font-size:15px; color:#8b949e; margin-bottom:20px; line-height:1.5;">รายละเอียดนโยบาย</p>
+        <p
+          id="event-desc"
+          style="
+            font-size: 15px;
+            color: #8b949e;
+            margin-bottom: 20px;
+            line-height: 1.5;
+          "
+        >
+          รายละเอียดนโยบาย
+        </p>
 
-            <div style="background:rgba(0,0,0,0.4); border:1px solid var(--border-color); border-radius:8px; padding:15px; margin-bottom:20px; text-align:left;">
-                <h4 style="margin:0 0 10px 0; color:#e6edf3; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">ผลกระทบหากอนุมัติ:</h4>
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>💰 งบประมาณ:</span> <span id="event-cost" style="font-weight:bold;"></span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>⭐ คะแนนนิยม:</span> <span id="event-app" style="font-weight:bold;"></span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>😊 ความสุข:</span> <span id="event-hap" style="font-weight:bold;"></span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                    <span>🏙️ โครงสร้างฯ:</span> <span id="event-inf" style="font-weight:bold;"></span>
-                </div>
-                <div style="display:flex; justify-content:space-between;">
-                    <span>🌳 สิ่งแวดล้อม:</span> <span id="event-env" style="font-weight:bold;"></span>
-                </div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; gap:15px;">
-                <button class="btn-event btn-approve" onclick="handleEventChoice('approve')">อนุมัติ</button>
-                <button class="btn-event btn-postpone" onclick="handleEventChoice('postpone')">เลื่อนไปก่อน</button>
-                <button class="btn-event btn-reject" onclick="handleEventChoice('reject')">ไม่อนุมัติ</button>
-            </div>
+        <div
+          style="
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+          "
+        >
+          <h4
+            style="
+              margin: 0 0 10px 0;
+              color: #e6edf3;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              padding-bottom: 5px;
+            "
+          >
+            ผลกระทบหากอนุมัติ:
+          </h4>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 5px;
+            "
+          >
+            <span>💰 งบประมาณ:</span>
+            <span id="event-cost" style="font-weight: bold"></span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 5px;
+            "
+          >
+            <span>⭐ คะแนนนิยม:</span>
+            <span id="event-app" style="font-weight: bold"></span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 5px;
+            "
+          >
+            <span>😊 ความสุข:</span>
+            <span id="event-hap" style="font-weight: bold"></span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 5px;
+            "
+          >
+            <span>🏙️ โครงสร้างฯ:</span>
+            <span id="event-inf" style="font-weight: bold"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <span>🌳 สิ่งแวดล้อม:</span>
+            <span id="event-env" style="font-weight: bold"></span>
+          </div>
         </div>
+
+        <div style="display: flex; justify-content: space-between; gap: 15px">
+          <button
+            class="btn-event btn-approve"
+            onclick="handleEventChoice('approve')"
+          >
+            อนุมัติ
+          </button>
+          <button
+            class="btn-event btn-postpone"
+            onclick="handleEventChoice('postpone')"
+          >
+            เลื่อนไปก่อน
+          </button>
+          <button
+            class="btn-event btn-reject"
+            onclick="handleEventChoice('reject')"
+          >
+            ไม่อนุมัติ
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ============ CABINET MODAL ============ -->
-    <div id="cabinet-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="glass-panel" style="border-radius:12px; padding:30px; width:500px;">
-            <h2 style="color:var(--primary); text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">💼 สภาคณะรัฐมนตรี (Cabinet)</h2>
-            <div id="cabinet-list" style="margin-top:20px;"></div>
-            <button class="nav-btn" style="width:100%; margin-top:20px; padding:12px;" onclick="closeCabinet()">ปิดหน้าต่าง</button>
-        </div>
+    <div
+      id="cabinet-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      "
+    >
+      <div
+        class="glass-panel"
+        style="border-radius: 12px; padding: 30px; width: 500px"
+      >
+        <h2
+          style="
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+          "
+        >
+          💼 สภาคณะรัฐมนตรี (Cabinet)
+        </h2>
+        <div id="cabinet-list" style="margin-top: 20px"></div>
+        <button
+          class="nav-btn"
+          style="width: 100%; margin-top: 20px; padding: 12px"
+          onclick="closeCabinet()"
+        >
+          ปิดหน้าต่าง
+        </button>
+      </div>
     </div>
 
     <!-- ============ ACHIEVEMENTS MODAL ============ -->
-    <div id="achievements-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="glass-panel" style="border-radius:12px; padding:30px; width:480px; max-height:80vh; overflow-y:auto; text-align:center;">
-            <h2 style="color:gold; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">🏆 เกียรติยศนายกฯ</h2>
-            <div id="achievements-list" style="margin-top:20px; display:flex; flex-direction:column; gap:12px; text-align:left;"></div>
-            <button class="nav-btn" style="width:100%; margin-top:20px; padding:12px;" onclick="closeAchievements()">ปิดหน้าต่าง</button>
-        </div>
+    <div
+      id="achievements-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      "
+    >
+      <div
+        class="glass-panel"
+        style="
+          border-radius: 12px;
+          padding: 30px;
+          width: 480px;
+          max-height: 80vh;
+          overflow-y: auto;
+          text-align: center;
+        "
+      >
+        <h2
+          style="
+            color: gold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+          "
+        >
+          🏆 เกียรติยศนายกฯ
+        </h2>
+        <div
+          id="achievements-list"
+          style="
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+          "
+        ></div>
+        <button
+          class="nav-btn"
+          style="width: 100%; margin-top: 20px; padding: 12px"
+          onclick="closeAchievements()"
+        >
+          ปิดหน้าต่าง
+        </button>
+      </div>
     </div>
 
     <!-- ============ SETTINGS MODAL ============ -->
-    <div id="settings-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="glass-panel" style="border-radius:12px; padding:30px; width:400px;">
-            <h2 style="color:var(--primary); text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">⚙️ ตั้งค่า</h2>
-            <div style="margin-top:20px; display:flex; flex-direction:column; gap:15px;">
-                <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>💬 แสดงเสียงสะท้อนประชาชน</span>
-                    <input type="checkbox" id="setting-chat" style="transform:scale(1.5);">
-                </label>
-                <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>⏱️ ความเร็วเริ่มต้น</span>
-                    <select id="setting-speed" style="padding:5px; background:#0d1117; color:#e6edf3; border:1px solid var(--border-color); border-radius:4px;">
-                        <option value="1">1x ▶</option>
-                        <option value="3">3x ▶▶</option>
-                        <option value="5">5x ▶▶▶</option>
-                    </select>
-                </label>
-            </div>
-            <button class="nav-btn" style="width:100%; margin-top:20px; padding:12px;" onclick="closeSettings()">บันทึกและปิด</button>
+    <div
+      id="settings-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      "
+    >
+      <div
+        class="glass-panel"
+        style="border-radius: 12px; padding: 30px; width: 400px"
+      >
+        <h2
+          style="
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+          "
+        >
+          ⚙️ ตั้งค่า
+        </h2>
+        <div
+          style="
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+          "
+        >
+          <label
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>💬 แสดงเสียงสะท้อนประชาชน</span>
+            <input
+              type="checkbox"
+              id="setting-chat"
+              style="transform: scale(1.5)"
+            />
+          </label>
+          <label
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>⏱️ ความเร็วเริ่มต้น</span>
+            <select
+              id="setting-speed"
+              style="
+                padding: 5px;
+                background: #0d1117;
+                color: #e6edf3;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+              "
+            >
+              <option value="1">1x ▶</option>
+              <option value="3">3x ▶▶</option>
+              <option value="5">5x ▶▶▶</option>
+            </select>
+          </label>
         </div>
+        <button
+          class="nav-btn"
+          style="width: 100%; margin-top: 20px; padding: 12px"
+          onclick="closeSettings()"
+        >
+          บันทึกและปิด
+        </button>
+      </div>
     </div>
 
     <!-- ============ SAVE MENU MODAL ============ -->
-    <div id="save-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
-        <div class="glass-panel" style="border-radius:12px; padding:30px; width:450px;">
-            <h2 style="color:var(--primary); text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">💾 บันทึกเกม</h2>
-            <div id="save-slots-ingame" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;"></div>
-            <button class="nav-btn" style="width:100%; margin-top:20px; padding:12px;" onclick="closeSaveMenu()">ปิด</button>
-        </div>
+    <div
+      id="save-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 3000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+      "
+    >
+      <div
+        class="glass-panel"
+        style="border-radius: 12px; padding: 30px; width: 450px"
+      >
+        <h2
+          style="
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+          "
+        >
+          💾 บันทึกเกม
+        </h2>
+        <div
+          id="save-slots-ingame"
+          style="
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+          "
+        ></div>
+        <button
+          class="nav-btn"
+          style="width: 100%; margin-top: 20px; padding: 12px"
+          onclick="closeSaveMenu()"
+        >
+          ปิด
+        </button>
+      </div>
     </div>
 
     <!-- ============ NEWSPAPER MODAL ============ -->
-    <div id="news-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:4000; align-items:center; justify-content:center;">
-        <div class="newspaper-bg" style="width:700px; max-height:90vh; overflow-y:auto;">
-            <div class="news-header">Siam Times</div>
-            <div style="font-style:italic; margin-bottom:20px; border-bottom:1px solid #2c2c2c; padding-bottom:5px;" id="news-date">31 ธันวาคม 2025</div>
-            <div class="news-headline" id="news-headline">รัฐบาลประกาศชัยชนะ!</div>
-            <div class="news-body" id="news-body">
-                รายละเอียดข่าว...
-            </div>
-            <button class="nav-btn" style="background:#2c2c2c; color:white; border:none; padding:10px 30px;" onclick="closeNews()">อ่านจบแล้ว (เล่นต่อ)</button>
+    <div
+      id="news-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 4000;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        class="newspaper-bg"
+        style="width: 700px; max-height: 90vh; overflow-y: auto"
+      >
+        <div class="news-header">Siam Times</div>
+        <div
+          style="
+            font-style: italic;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #2c2c2c;
+            padding-bottom: 5px;
+          "
+          id="news-date"
+        >
+          31 ธันวาคม 2025
         </div>
+        <div class="news-headline" id="news-headline">รัฐบาลประกาศชัยชนะ!</div>
+        <div class="news-body" id="news-body">รายละเอียดข่าว...</div>
+        <button
+          class="nav-btn"
+          style="
+            background: #2c2c2c;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+          "
+          onclick="closeNews()"
+        >
+          อ่านจบแล้ว (เล่นต่อ)
+        </button>
+      </div>
     </div>
 
     <!-- ============ TOAST ============ -->
@@ -162,130 +513,259 @@
     <div id="generic-toast"></div>
 
     <!-- ============ GAME OVER MODAL ============ -->
-    <div id="game-over-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:4000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
-        <div style="background:#1a0505; border: 2px solid var(--danger); border-radius:12px; padding:40px; width:500px; text-align:center; box-shadow:0 0 50px rgba(215,58,73,0.5);">
-            <h1 id="game-over-title" style="color:var(--danger); font-size:36px; margin-bottom:10px;">GAME OVER</h1>
-            <p id="game-over-desc" style="font-size:18px; color:#c9d1d9; margin-bottom:30px;">เหตุผลการพ่ายแพ้...</p>
-            <button class="btn-event btn-reject" style="font-size:18px; padding:15px 40px;" onclick="location.reload()">เริ่มเกมใหม่</button>
-        </div>
+    <div
+      id="game-over-modal-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 4000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+      "
+    >
+      <div
+        style="
+          background: #1a0505;
+          border: 2px solid var(--danger);
+          border-radius: 12px;
+          padding: 40px;
+          width: 500px;
+          text-align: center;
+          box-shadow: 0 0 50px rgba(215, 58, 73, 0.5);
+        "
+      >
+        <h1
+          id="game-over-title"
+          style="color: var(--danger); font-size: 36px; margin-bottom: 10px"
+        >
+          GAME OVER
+        </h1>
+        <p
+          id="game-over-desc"
+          style="font-size: 18px; color: #c9d1d9; margin-bottom: 30px"
+        >
+          เหตุผลการพ่ายแพ้...
+        </p>
+        <button
+          class="btn-event btn-reject"
+          style="font-size: 18px; padding: 15px 40px"
+          onclick="location.reload()"
+        >
+          เริ่มเกมใหม่
+        </button>
+      </div>
     </div>
 
     <!-- ============ TOP BAR ============ -->
     <div id="topbar">
-        <div class="time-controls glass-panel">
-            📅 <span id="game-date" style="margin-right: 15px;">01 ม.ค. 2025</span>
-            <button id="btn-speed-1" class="time-btn" onclick="setTimeSpeed(1)">▶</button>
-            <button id="btn-speed-3" class="time-btn" onclick="setTimeSpeed(3)">▶▶</button>
-            <button id="btn-speed-5" class="time-btn" onclick="setTimeSpeed(5)">▶▶▶</button>
-            <button id="btn-pause" class="time-btn" onclick="setTimeSpeed(0)">⏸️</button>
-        </div>
+      <div class="time-controls glass-panel">
+        📅 <span id="game-date" style="margin-right: 15px">01 ม.ค. 2025</span>
+        <button id="btn-speed-1" class="time-btn" onclick="setTimeSpeed(1)">
+          ▶
+        </button>
+        <button id="btn-speed-3" class="time-btn" onclick="setTimeSpeed(3)">
+          ▶▶
+        </button>
+        <button id="btn-speed-5" class="time-btn" onclick="setTimeSpeed(5)">
+          ▶▶▶
+        </button>
+        <button id="btn-pause" class="time-btn" onclick="setTimeSpeed(0)">
+          ⏸️
+        </button>
+      </div>
 
-        <div class="res-group">
-            <div class="res-item" title="งบประมาณ (ล้านบาท)">
-                💰 <span id="res-budget">1000</span>M
-            </div>
-            <div class="res-item clickable" title="หนี้สาธารณะ (คลิกเพื่อจ่ายคืน)" style="color:var(--danger)" onclick="repayDebt()">
-                📉 <span id="res-debt">0</span>M <span style="font-size:10px; opacity:0.6;">↩</span>
-            </div>
+      <div class="res-group">
+        <div class="res-item" title="งบประมาณ (ล้านบาท)">
+          💰 <span id="res-budget">1000</span>M
         </div>
+        <div
+          class="res-item clickable"
+          title="หนี้สาธารณะ (คลิกเพื่อจ่ายคืน)"
+          style="color: var(--danger)"
+          onclick="repayDebt()"
+        >
+          📉 <span id="res-debt">0</span>M
+          <span style="font-size: 10px; opacity: 0.6">↩</span>
+        </div>
+      </div>
 
-        <div class="res-group">
-            <div class="res-item" title="คะแนนนิยม">
-                ⭐ <span id="res-approval">50</span>%
-                <div class="mini-bar"><div class="mini-bar-fill" id="bar-approval"></div></div>
-            </div>
-            <div class="res-item" title="เสถียรภาพรัฐบาล">
-                ⚖️ <span id="res-stability">70</span>%
-                <div class="mini-bar"><div class="mini-bar-fill" id="bar-stability"></div></div>
-            </div>
+      <div class="res-group">
+        <div class="res-item" title="คะแนนนิยม">
+          ⭐ <span id="res-approval">50</span>%
+          <div class="mini-bar">
+            <div class="mini-bar-fill" id="bar-approval"></div>
+          </div>
         </div>
+        <div class="res-item" title="เสถียรภาพรัฐบาล">
+          ⚖️ <span id="res-stability">70</span>%
+          <div class="mini-bar">
+            <div class="mini-bar-fill" id="bar-stability"></div>
+          </div>
+        </div>
+      </div>
 
-        <div class="res-group">
-            <div class="res-item" title="ประชากร">
-                👥 <span id="res-pop">70.00</span>M
-            </div>
-            <div class="res-item" title="ความสุขเฉลี่ย">
-                😊 <span id="res-avg-hap">50</span>
-                <div class="mini-bar"><div class="mini-bar-fill" id="bar-avghap"></div></div>
-            </div>
-            <div class="res-item" title="แรงฝ่ายค้าน (มาก = อันตราย)">
-                🗣️ <span id="res-opposition">30</span>
-                <div class="mini-bar"><div class="mini-bar-fill" id="bar-opposition"></div></div>
-            </div>
+      <div class="res-group">
+        <div class="res-item" title="ประชากร">
+          👥 <span id="res-pop">70.00</span>M
         </div>
+        <div class="res-item" title="ความสุขเฉลี่ย">
+          😊 <span id="res-avg-hap">50</span>
+          <div class="mini-bar">
+            <div class="mini-bar-fill" id="bar-avghap"></div>
+          </div>
+        </div>
+        <div class="res-item" title="แรงฝ่ายค้าน (มาก = อันตราย)">
+          🗣️ <span id="res-opposition">30</span>
+          <div class="mini-bar">
+            <div class="mini-bar-fill" id="bar-opposition"></div>
+          </div>
+        </div>
+      </div>
 
-        <div class="res-actions">
-            <button class="nav-btn" onclick="openSaveMenu()" title="บันทึกเกม">💾</button>
-            <button class="nav-btn" onclick="openCabinet()" title="รัฐมนตรี">💼</button>
-            <button class="nav-btn" onclick="openAchievements()" style="color:gold;" title="ความสำเร็จ">🏆</button>
-            <button class="nav-btn" onclick="startTutorial()" title="วิธีเล่น">📖</button>
-            <button class="nav-btn" onclick="openSettings()" title="ตั้งค่า">⚙️</button>
-        </div>
+      <div class="res-actions">
+        <button class="nav-btn" onclick="openSaveMenu()" title="บันทึกเกม">
+          💾
+        </button>
+        <button class="nav-btn" onclick="openCabinet()" title="รัฐมนตรี">
+          💼
+        </button>
+        <button
+          class="nav-btn"
+          onclick="openAchievements()"
+          style="color: gold"
+          title="ความสำเร็จ"
+        >
+          🏆
+        </button>
+        <button class="nav-btn" onclick="startTutorial()" title="วิธีเล่น">
+          📖
+        </button>
+        <button class="nav-btn" onclick="openSettings()" title="ตั้งค่า">
+          ⚙️
+        </button>
+      </div>
     </div>
 
     <div id="main-container">
-        <div id="map"></div>
+      <div id="map"></div>
 
-        <div id="sidebar" class="glass-panel">
-            <div id="sidebar-empty">
-                <h3>📌 รายงานภาพรวม</h3>
-                <p style="color:#8b949e; font-size:13px; margin-top:20px;">คลิกที่จังหวัดบนแผนที่เพื่อดูข้อมูลและโครงการ</p>
-                <div style="margin-top:30px; padding:15px; background:rgba(0,0,0,0.3); border-radius:8px;">
-                    <h4 style="color:#8b949e; font-size:13px; margin:0 0 8px 0;">💡 เคล็ดลับ</h4>
-                    <ul style="margin:0; padding-left:18px; font-size:12px; color:#8b949e; line-height:1.7;">
-                        <li>พัฒนาโครงสร้างพื้นฐาน = รายได้เพิ่ม</li>
-                        <li>ความสุขต่ำกว่า 30 = ม็อบประท้วง</li>
-                        <li>คลิกตัวเลขหนี้เพื่อจ่ายคืน</li>
-                        <li>เลือกตั้งปี 2029 — ต้องการนิยม &gt;50%</li>
-                    </ul>
-                </div>
-            </div>
-            <div id="sidebar-content" style="display: none;">
-                <h2 id="prov-name">ชื่อจังหวัด</h2>
-
-                <div class="stat-box">
-                    <div>😊 ความสุขประชาชน</div>
-                    <span id="prov-hap">0</span>/100
-                </div>
-                <div class="stat-box">
-                    <div>🚂 โครงสร้างพื้นฐาน</div>
-                    <span id="prov-inf">0</span>/100
-                </div>
-                <div class="stat-box">
-                    <div>🌳 สิ่งแวดล้อม</div>
-                    <span id="prov-env">0</span>/100
-                </div>
-
-                <div style="margin-top: 15px;">
-                    <h4 style="color:#8b949e; border-bottom: 1px solid #30363d; padding-bottom:5px; margin-bottom:10px; font-size: 14px;">📝 นโยบายที่ได้รับการอนุมัติ</h4>
-                    <ul id="prov-policies-list" style="list-style:none; padding:0; margin:0; font-size:13px; color:#c9d1d9; max-height: 120px; overflow-y: auto;">
-                    </ul>
-                </div>
-
-                <div style="margin-top: 20px; font-size:12px; color:#8b949e; line-height:1.6;">
-                    * หากความสุขต่ำกว่า 30 ประชาชนอาจออกมาชุมนุมประท้วง ซึ่งจะส่งผลเสียต่อความเสถียรภาพระดับชาติ<br>
-                    * การอนุมัตินโยบายในพื้นที่จะช่วยเพิ่มความสุขได้โดยตรง
-                </div>
-            </div>
+      <div id="sidebar" class="glass-panel">
+        <div id="sidebar-empty">
+          <h3>📌 รายงานภาพรวม</h3>
+          <p style="color: #8b949e; font-size: 13px; margin-top: 20px">
+            คลิกที่จังหวัดบนแผนที่เพื่อดูข้อมูลและโครงการ
+          </p>
+          <div
+            style="
+              margin-top: 30px;
+              padding: 15px;
+              background: rgba(0, 0, 0, 0.3);
+              border-radius: 8px;
+            "
+          >
+            <h4 style="color: #8b949e; font-size: 13px; margin: 0 0 8px 0">
+              💡 เคล็ดลับ
+            </h4>
+            <ul
+              style="
+                margin: 0;
+                padding-left: 18px;
+                font-size: 12px;
+                color: #8b949e;
+                line-height: 1.7;
+              "
+            >
+              <li>พัฒนาโครงสร้างพื้นฐาน = รายได้เพิ่ม</li>
+              <li>ความสุขต่ำกว่า 30 = ม็อบประท้วง</li>
+              <li>คลิกตัวเลขหนี้เพื่อจ่ายคืน</li>
+              <li>เลือกตั้งปี 2029 — ต้องการนิยม &gt;50%</li>
+            </ul>
+          </div>
         </div>
+        <div id="sidebar-content" style="display: none">
+          <h2 id="prov-name">ชื่อจังหวัด</h2>
+
+          <div class="stat-box">
+            <div>😊 ความสุขประชาชน</div>
+            <span id="prov-hap">0</span>/100
+          </div>
+          <div class="stat-box">
+            <div>🚂 โครงสร้างพื้นฐาน</div>
+            <span id="prov-inf">0</span>/100
+          </div>
+          <div class="stat-box">
+            <div>🌳 สิ่งแวดล้อม</div>
+            <span id="prov-env">0</span>/100
+          </div>
+
+          <div style="margin-top: 15px">
+            <h4
+              style="
+                color: #8b949e;
+                border-bottom: 1px solid #30363d;
+                padding-bottom: 5px;
+                margin-bottom: 10px;
+                font-size: 14px;
+              "
+            >
+              📝 นโยบายที่ได้รับการอนุมัติ
+            </h4>
+            <ul
+              id="prov-policies-list"
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                font-size: 13px;
+                color: #c9d1d9;
+                max-height: 120px;
+                overflow-y: auto;
+              "
+            ></ul>
+          </div>
+
+          <div
+            style="
+              margin-top: 20px;
+              font-size: 12px;
+              color: #8b949e;
+              line-height: 1.6;
+            "
+          >
+            * หากความสุขต่ำกว่า 30 ประชาชนอาจออกมาชุมนุมประท้วง
+            ซึ่งจะส่งผลเสียต่อความเสถียรภาพระดับชาติ<br />
+            * การอนุมัตินโยบายในพื้นที่จะช่วยเพิ่มความสุขได้โดยตรง
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ============ CITIZEN CHAT FEED ============ -->
     <div id="chat-container">
-        <div id="chat-header">
-            <span>💬 เสียงสะท้อนประชาชน</span>
-            <span style="font-size: 10px; color: #8b949e; cursor: pointer;" onclick="document.getElementById('chat-messages').innerHTML=''">เคลียร์</span>
+      <div id="chat-header">
+        <span>💬 เสียงสะท้อนประชาชน</span>
+        <span
+          style="font-size: 10px; color: #8b949e; cursor: pointer"
+          onclick="document.getElementById('chat-messages').innerHTML = ''"
+          >เคลียร์</span
+        >
+      </div>
+      <div id="chat-messages">
+        <div class="chat-msg system">
+          <div class="sender">ระบบแจ้งเตือน</div>
+          ยินดีต้อนรับท่านนายกฯ เสียงสะท้อนจากประชาชนจะปรากฏที่นี่...
         </div>
-        <div id="chat-messages">
-            <div class="chat-msg system">
-                <div class="sender">ระบบแจ้งเตือน</div>
-                ยินดีต้อนรับท่านนายกฯ เสียงสะท้อนจากประชาชนจะปรากฏที่นี่...
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script src="data.js"></script>
-    <script src="game.js"></script>
-    <script src="ui.js"></script>
-</body>
+    <script src="js/data.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+  </body>
 </html>
